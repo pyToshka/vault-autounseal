@@ -137,7 +137,10 @@ def get_seal_status():
         )
         if not get_seal.json()["initialized"]:
             logger.info("Going to init and unseal Vault")
-            delete_secret([root_token, vault_keys])
+            try:
+                delete_secret([root_token, vault_keys])
+            except kubernetes.client.exceptions.ApiException:
+                pass
             create_secrets(init_vault())
         if get_seal.json()["sealed"]:
             vault_unseal(read_secret("vault-keys"))
