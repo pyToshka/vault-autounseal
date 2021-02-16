@@ -1,0 +1,8 @@
+version: '3'
+services:
+  autounseal:
+    build: .
+    environment:
+      VAULT_URL: "http://docker.for.mac.host.internal:8200"
+      VAULT_SECRET_SHARES: 5
+      VAULT_SECRET_THRESHOLD: 5

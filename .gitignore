@@ -1,0 +1,8 @@
+.idea/
+__pycache__/
+*.py[cod]
+*$py.class
+vault
+config.json
+curator.yml
+data

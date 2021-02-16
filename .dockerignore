@@ -1,0 +1,27 @@
+### VirtualEnv
+.Python
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pyvenv.cfg
+.venv
+### JetBrains
+.idea/
+### Python
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+build/
+.env
+env/
+docs/
+docker-compose.yaml
+Dockerfile
+venv
+tests
+main.py
+*.json
