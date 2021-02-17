@@ -48,7 +48,10 @@ except kubernetes.config.config_exception.ConfigException:
     config.load_kube_config()
     client.configuration.assert_hostname = False
 
-PAYLOAD = {"secret_shares": secret_shares, "secret_threshold": secret_threshold}
+PAYLOAD = {
+    "secret_shares": int(secret_shares),
+    "secret_threshold": int(secret_threshold),
+}
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 api_instance = client.CoreV1Api()
 k8s_secret = client.V1Secret()
