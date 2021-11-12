@@ -1,4 +1,4 @@
-FROM python:3.8-alpine
+FROM python:3.11.0a2-alpine
 ENV VAULT_URL=""
 ENV VAULT_SECRET_SHARES=""
 ENV VAULT_SECRET_THRESHOLD=""
