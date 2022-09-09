@@ -25,3 +25,5 @@ venv
 tests
 main.py
 *.json
+# helm
+charts/
