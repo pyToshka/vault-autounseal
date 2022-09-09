@@ -42,9 +42,35 @@ Building docker container
 docker build . -t vault-autounseal:latest
 
 ```
+or build multiarch docker image:
+
+```shell
+make docker
+```
 
 or You can pull existing image from DockerHub
 
 ```shell
-docker pull kennyopennix/vault-autounseal:latest
+docker pull ghcr.io/camaeel/vault-autounseal:v0.0.1
 ```
+
+### Using helm chart
+
+[Helm](https://helm.sh) must be installed to use the charts.  Please refer to
+Helm's [documentation](https://helm.sh/docs) to get started.
+
+Once Helm has been set up correctly, add the repo as follows:
+
+  helm repo add vault-autounseal https://camaeel.github.io/vault-autounseal
+
+If you had already added this repo earlier, run `helm repo update` to retrieve
+the latest versions of the packages.  You can then run `helm search repo
+vault-autounseal` to see the charts.
+
+To install the vault-autounseal chart:
+
+    helm install vault-autounseal vault-autounseal/vault-autounseal --set=settings.vault_url=http://vault.vault:8200
+
+To uninstall the chart:
+
+    helm delete vault-autounseal
