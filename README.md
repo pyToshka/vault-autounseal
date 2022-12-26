@@ -51,7 +51,7 @@ make docker
 or You can pull existing image from DockerHub
 
 ```shell
-docker pull ghcr.io/camaeel/vault-autounseal:v0.0.1
+docker pull kennyopennix/vault-autounseal
 ```
 
 ### Using helm chart
