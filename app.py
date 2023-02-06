@@ -146,7 +146,7 @@ def get_seal_status():
                 pass
             create_secrets(init_vault())
         if get_seal.json()["sealed"]:
-            vault_unseal(read_secret("vault-keys"))
+            vault_unseal(read_secret(vault_keys))
     except requests.exceptions.ConnectionError as err:
         logger.info(f"Got error {err}")
         pass
