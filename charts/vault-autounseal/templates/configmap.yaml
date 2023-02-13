@@ -11,3 +11,4 @@ data:
   NAMESPACE: {{ .Release.Namespace }}
   VAULT_ROOT_TOKEN_SECRET: {{ .Values.settings.vault_root_token_secret }}
   VAULT_KEYS_SECRET: {{ .Values.settings.vault_keys_secret }}
+  LOGURU_LEVEL: {{ .Values.settings.log_level | default "INFO" }}
