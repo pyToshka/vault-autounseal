@@ -2,3 +2,5 @@ loguru==0.6.0
 kubernetes==12.0.1
 requests==2.31.0
 setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
+certifi>=2023.7.22 # not directly required, pinned by Snyk to avoid a vulnerability
+rsa>=4.7 # not directly required, pinned by Snyk to avoid a vulnerability
