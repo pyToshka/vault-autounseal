@@ -5,8 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: kennyopennix/vault-autounseal
-  pullPolicy: IfNotPresent
+  repository: opennix/vault-autounseal
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
