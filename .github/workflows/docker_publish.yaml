@@ -7,11 +7,11 @@ name: Docker
 
 on:
   push:
-    branches: [ "*" ]
+    branches: [ "main" ]
     # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+    tags: [ 'v*.*.*' ,'vault-autounseal-*.*.*']
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "main", ]
 
 
 jobs:
