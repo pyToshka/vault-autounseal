@@ -6,12 +6,13 @@ name: Docker
 # documentation.
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "*" ]
     # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+    tags: [ 'vault-autounseal-*.*.*' ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "main"]
 
 
 jobs:
