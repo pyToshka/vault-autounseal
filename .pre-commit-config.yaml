@@ -1,29 +1,24 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+    rev: v4.5.0
     hooks:
     -   id: check-yaml
+        args: [--allow-multiple-documents]
+        exclude: ^charts/
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
     -   id: check-docstring-first
     -   id: check-merge-conflict
     -   id: mixed-line-ending
         args: [--fix=lf]
+
 - repo: https://github.com/ambv/black
-  rev: stable
-  hooks:
-    - id: black
-- repo: https://github.com/ambv/black
-  rev: stable
+  rev: 24.2.0
   hooks:
   - id: black
     language_version: python3.8
-- repo: https://github.com/motet-a/jinjalint
-  rev: ''
-  hooks:
-  - id: jinjalint
 - repo: https://github.com/pre-commit/pygrep-hooks
-  rev: v1.7.1
+  rev: v1.10.0
   hooks:
   - id: python-use-type-annotations
   - id: python-check-blanket-noqa
@@ -32,22 +27,19 @@ repos:
   - id: rst-backticks
   - id: text-unicode-replacement-char
 - repo: https://github.com/jumanjihouse/pre-commit-hooks
-  rev: master
+  rev: 3.0.0
   hooks:
     - id: bundler-audit
-    - id: check-mailmap
     - id: fasterer
     - id: forbid-binary
     - id: git-check
-    - id: markdownlint
     - id: reek
-    - id: require-ascii
     - id: script-must-have-extension
     - id: script-must-not-have-extension
     - id: shellcheck
     - id: shfmt
 - repo: https://github.com/jorisroovers/gitlint
-  rev: 'v0.15.0'
+  rev: 'v0.19.1'
   hooks:
   - id: gitlint
 - repo: local
@@ -59,14 +51,6 @@ repos:
     entry: flake8
     types: [python]
 - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
-  rev: 'v1.2.1'
+  rev: 'v1.3.3'
   hooks:
   - id: python-safety-dependencies-check
-- repo: https://github.com/PyCQA/bandit
-  rev: '1.7.0'
-  hooks:
-  - id: bandit
-- repo: https://github.com/petalmd/dockerfile-pre-commit
-  rev: 'v1.0'
-  hooks:
-  - id: dockerlint

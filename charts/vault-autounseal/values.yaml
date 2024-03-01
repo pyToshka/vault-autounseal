@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/pytoshka/vault-autounseal
-  pullPolicy: IfNotPresent
+  repository: opennix/vault-autounseal
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -64,3 +64,5 @@ settings:
   vault_root_token_secret: vault-root-token
   # secret for storing vault unlock keys
   vault_keys_secret: vault-keys
+  # time between polling for vault status, in seconds
+  scan_delay: 5

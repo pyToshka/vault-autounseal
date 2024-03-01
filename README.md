@@ -1,10 +1,29 @@
 # vault-auto-unseal
+## Disclaimer
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ## What for
 
-As You know Vault provide several mechanisms for Auto unseal,
-but sometimes I couldn't use AWS or GCP as cloud provider.
-Main idea was use Kubernetes secretes as source for auto unseal.
+As you know, Vault provides several mechanisms for auto unsealing. However, sometimes I couldn't use AWS or GCP as the cloud provider. The main idea was to use Kubernetes secrets as the source for auto unsealing.
+
+## Tested on
+
+| Engine     | Version       | Vault mode |
+|------------|---------------|------------|
+| kind       | v1.29.1       | single/ha  |
+| crc        | 2.32.0+54a6f9 | single     |
+| OpenShift  | 4.14.8        | single/ha  |
+| Kubernetes | v1.29.1       | single/ha  |
+|            |               |            |
 
 ## Dependencies
 
@@ -23,14 +42,14 @@ Run script `python app.py`
 
 ## System environments
 
-| Name                    | Description                                                  |
-| ----------------------- | ------------------------------------------------------------ |
-| VAULT_URL               | Vault server url with port e.g http://127.0.0.1:8200         |
+| Name                    | Description                                                                                                                                     |
+|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| VAULT_URL               | Vault server url with port e.g http://127.0.0.1:8200                                                                                            |
 | VAULT_SECRET_SHARES     | Specifies the number of shares that should be encrypted by the HSM and stored for auto-unsealing. Currently must be the same as `secret_shares` |
-| VAULT_SECRET_THRESHOLD  | Specifies the number of shares required to reconstruct the recovery key. This must be less than or equal to `recovery_shares`. |
-| NAMESPACE               | Kubernetes namespace for storing vault root key and keys     |
-| VAULT_ROOT_TOKEN_SECRET | Kubernetes secret name for root token                        |
-| VAULT_KEYS_SECRET       | Kubernetes secret name for vault key                         |
+| VAULT_SECRET_THRESHOLD  | Specifies the number of shares required to reconstruct the recovery key. This must be less than or equal to `recovery_shares`.                  |
+| NAMESPACE               | Kubernetes namespace for storing vault root key and keys                                                                                        |
+| VAULT_ROOT_TOKEN_SECRET | Kubernetes secret name for root token                                                                                                           |
+| VAULT_KEYS_SECRET       | Kubernetes secret name for vault key                                                                                                            |
 
 ## Deployment
 
@@ -51,7 +70,9 @@ make docker
 or You can pull existing image from DockerHub
 
 ```shell
-docker pull kennyopennix/vault-autounseal
+
+docker pull opennix/vault-autounseal
+
 ```
 
 ### Using helm chart
@@ -74,3 +95,5 @@ To install the vault-autounseal chart:
 To uninstall the chart:
 
     helm delete vault-autounseal
+
+<a href="https://www.buymeacoffee.com/pyToshka" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
