@@ -10,7 +10,7 @@ on:
   push:
     branches: [ "*" ]
     # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+    tags: [ 'vault-autounseal-*.*.*' ]
   pull_request:
     branches: [ "main"]
 
