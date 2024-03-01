@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - master
     tags: [ 'v*.*.*' ]
     paths:
       - "charts/**"
@@ -24,7 +23,8 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.4.0
+        uses: helm/chart-releaser-action@v1.6.0
         continue-on-error: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_SKIP_EXISTING: true
