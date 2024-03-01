@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - master
-    tags: [ 'v*.*.*' ]
+    tags: [ 'vault-autounseal-*.*.*' ]
     paths:
       - "charts/**"
 
