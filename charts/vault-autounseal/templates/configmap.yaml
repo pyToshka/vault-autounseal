@@ -13,3 +13,4 @@ data:
   VAULT_KEYS_SECRET: {{ .Values.settings.vault_keys_secret }}
   LOGURU_LEVEL: {{ .Values.settings.log_level | default "INFO" }}
   VAULT_SCAN_DELAY: {{ .Values.settings.scan_delay | quote }}
+  VAULT_LABEL_SELECTOR: {{ .Values.settings.vault_label_selector }}

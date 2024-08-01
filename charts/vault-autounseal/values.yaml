@@ -66,3 +66,5 @@ settings:
   vault_keys_secret: vault-keys
   # time between polling for vault status, in seconds
   scan_delay: 5
+  # vault label to use to retrieve vault instance
+  vault_label_selector: app.kubernetes.io/instance=vault,component=server
