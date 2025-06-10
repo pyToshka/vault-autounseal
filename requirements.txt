@@ -1,6 +1,6 @@
 loguru==0.6.0
 kubernetes==29.0.0
-requests==2.32.0
+requests==2.32.4
 
 certifi==2024.7.4 # not directly required, pinned by Snyk to avoid a vulnerability
 rsa>=4.7.2
