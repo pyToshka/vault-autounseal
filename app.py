@@ -118,7 +118,22 @@ def get_seal_status(vault_instance_url, vault_status):
         get_seal = requests.get(
             f"{vault_instance_url}/v1/sys/seal-status", verify=False  # nosec
         )
-        if not get_seal.json()["initialized"]:
+        seal_status = get_seal.json()
+    except requests.exceptions.ConnectionError as seal_status_error:
+        logger.info("Unexpected status -> {}", seal_status_error)
+        return status_error
+    except ValueError as seal_status_error:
+        # The endpoint answered with a non-JSON body (proxy/error page).
+        logger.info("Unexpected seal-status response -> {}", seal_status_error)
+        return status_error
+    if not isinstance(seal_status, dict) or "initialized" not in seal_status or "sealed" not in seal_status:
+        # The endpoint answered, but not with a seal-status document (for
+        # example an error JSON without these keys). Treat it like any other
+        # unexpected status instead of crashing the scan loop with KeyError.
+        logger.info("Unexpected seal-status response from {}", vault_instance_url)
+        return status_error
+    try:
+        if not seal_status["initialized"]:
             if vault_status:
                 logger.info(
                     "Vault has already been initialized, establishing quorum instead"
@@ -138,7 +153,7 @@ def get_seal_status(vault_instance_url, vault_status):
             read_secret(vault_keys, vault_instance_url)
 
             return status_init
-        if get_seal.json()["sealed"]:
+        if seal_status["sealed"]:
             logger.info("Unsealing Vault node {}", replica_url)
             read_secret(vault_keys, vault_instance_url)
 
