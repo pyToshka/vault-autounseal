@@ -113,7 +113,18 @@ def vault_unseal(key, vault_instance_url):
         logger.info("{} has been provided an unseal key", vault_instance_url)
 
 
-def get_seal_status(vault_instance_url, vault_status):
+def fetch_seal_status(vault_instance_url):
+    """Fetch one seal-status document, or None if it is not usable.
+
+    Usable means: a JSON object whose ``initialized`` and ``sealed`` fields
+    are both booleans. Anything else — a connection failure, a non-JSON
+    body, an error JSON without these keys, or fields of the wrong type
+    (for example ``{"initialized": null, "sealed": true}``) — is not a
+    seal-status document, and must never be used to decide whether to
+    initialize. A null ``initialized`` is falsy, so treating it as
+    "uninitialized" would delete the existing root-token and unseal-key
+    Secrets and create a separate cluster.
+    """
     try:
         get_seal = requests.get(
             f"{vault_instance_url}/v1/sys/seal-status", verify=False  # nosec
@@ -121,24 +132,54 @@ def get_seal_status(vault_instance_url, vault_status):
         seal_status = get_seal.json()
     except requests.exceptions.ConnectionError as seal_status_error:
         logger.info("Unexpected status -> {}", seal_status_error)
-        return status_error
+        return None
     except ValueError as seal_status_error:
         # The endpoint answered with a non-JSON body (proxy/error page).
         logger.info("Unexpected seal-status response -> {}", seal_status_error)
-        return status_error
-    if not isinstance(seal_status, dict) or "initialized" not in seal_status or "sealed" not in seal_status:
+        return None
+    if (
+        not isinstance(seal_status, dict)
+        or not isinstance(seal_status.get("initialized"), bool)
+        or not isinstance(seal_status.get("sealed"), bool)
+    ):
         # The endpoint answered, but not with a seal-status document (for
-        # example an error JSON without these keys). Treat it like any other
-        # unexpected status instead of crashing the scan loop with KeyError.
+        # example an error JSON without these keys, or keys of the wrong
+        # type). Treat it like any other unexpected status instead of
+        # crashing the scan loop with KeyError or, worse, acting on it.
         logger.info("Unexpected seal-status response from {}", vault_instance_url)
+        return None
+    return seal_status
+
+
+def get_seal_status(
+    vault_instance_url, vault_status, cluster_known=False, scan_inconclusive=False
+):
+    seal_status = fetch_seal_status(vault_instance_url)
+    if seal_status is None:
         return status_error
     try:
         if not seal_status["initialized"]:
-            if vault_status:
+            if vault_status or cluster_known:
                 logger.info(
                     "Vault has already been initialized, establishing quorum instead"
                 )
                 return status_init  # Return status_init to establish quorum
+
+            if scan_inconclusive:
+                # Another replica in this scan cycle answered with an
+                # unusable seal-status document, so this cycle cannot
+                # establish that no existing cluster is present: an
+                # initialized replica may simply be the one that answered
+                # badly, and a Raft node waiting to join that cluster
+                # looks uninitialized. Deleting the Secrets and
+                # initializing here could create a separate cluster, so
+                # defer initialization to a later cycle instead.
+                logger.info(
+                    "Deferring initialization: scan cycle is inconclusive, "
+                    "not deleting Secrets for {}",
+                    vault_instance_url,
+                )
+                return status_error
 
             logger.info("Going to init and unseal Vault")
             try:
@@ -368,8 +409,28 @@ if __name__ == "__main__":
         for pod in pods.items:
             vault_replicas.append(f"{url.scheme}://{pod.status.pod_ip}:{vault_port}")
         logger.info("Discovered Vault instance(s): {}", vault_replicas)
+        # Pre-scan, without side effects: initialization is destructive
+        # (it deletes the root-token and unseal-key Secrets), so it must
+        # only run when this cycle establishes that no existing cluster
+        # is present. If any replica is already initialized, an
+        # uninitialized replica is a node waiting to join it, not a
+        # reason to initialize. If any replica answered unusably, the
+        # cycle is inconclusive — the initialized replica may be the
+        # one that answered badly — so initialization is deferred to a
+        # later cycle. Unsealing a sealed, initialized replica is not
+        # destructive and is not deferred. This costs one extra
+        # seal-status fetch per replica per cycle.
+        pre_scan = {
+            r_url: fetch_seal_status(r_url) for r_url in vault_replicas
+        }
+        cluster_known = any(
+            doc is not None and doc["initialized"] for doc in pre_scan.values()
+        )
+        scan_inconclusive = any(doc is None for doc in pre_scan.values())
         for replica_url in vault_replicas:
-            status = get_seal_status(replica_url, vault_initialized)
+            status = get_seal_status(
+                replica_url, vault_initialized, cluster_known, scan_inconclusive
+            )
             if status == status_init:
                 if len(vault_replicas) > 1:
                     logger.info(
